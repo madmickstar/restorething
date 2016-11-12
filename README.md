@@ -16,7 +16,7 @@
 
 # Sample commands
 
-In all of the following cases, if no hour is supplied the default value is set to 23:59.
+In all of the following cases, if no hour is supplied the default time value is set to 23:59:59.
 
 Restore closest file before 6am 15th August 2016, if no file is found 'restorething' will look for the closet file after 6am 15th August 2016. 
 ```bash
