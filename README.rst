@@ -17,7 +17,7 @@ Restore Modes
 
 Installation
 -------------
-Install ``restorething`` from source
+``restorething`` from source
 
 .. code:: bash
 
@@ -25,7 +25,7 @@ Install ``restorething`` from source
     $ pip install dist\restorething-x.x.x.tar.gz
 
 
-Install ``restorething`` from PyPI
+``restorething`` from PyPI
 
 .. code:: bash
 
@@ -40,22 +40,22 @@ Restore closest file before 6am 15th August 2016, if no file is found ``restoret
 
 .. code:: bash
 
-    $ restorething.py 20160815 -vd sync/.stversions -hr 6
+    $ python -m restorething 20160815 -vd sync/.stversions -hr 6
 
 Restore closest file after 6am 15th August 2016, if no file is found, no file will be restored.
 
 .. code:: bash
 
-    $ restorething.py 20160815 -vd sync/.stversions -hr 6 -a
+    $ python -m restorething 20160815 -vd sync/.stversions -hr 6 -a
 
 Restore closest file before 6am 15th August 2016, if no file is found, no file will be restored.
 
 .. code:: bash
 
-    $ restorething.py 20160815 -vd sync/.stversions -hr 6 -b
+    $ python -m restorething 20160815 -vd sync/.stversions -hr 6 -b
 
 Restore closest file no more than 10 hours before 6am 15th August 2016, if no file is found ``restorething`` will look for the closet file no more than 10 hours after 6am 15th August 2016.
 
 .. code:: bash
 
-    $ restorething.py 20160815 -vd sync/.stversions -hr 6 -pm 10
+    $ python -m restorething 20160815 -vd sync/.stversions -hr 6 -pm 10

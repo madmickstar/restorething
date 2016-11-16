@@ -17,14 +17,14 @@ Restore Modes
 
 Installation
 -------------
-Install ```restorething``` from source
+```restorething``` from source
 
 ```bash
     $ python setup.py sdist
     $ pip install dist\restorething-x.x.x.tar.gz
 ```
 
-Install ```restorething``` from PyPI
+```restorething``` from PyPI
 ```bash
 $ pip install restorething
 ```
