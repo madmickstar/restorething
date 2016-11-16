@@ -15,6 +15,23 @@ Restore Modes
 * Filter dir with specific string
 
 
+Installation
+-------------
+Install ``restorething`` from source
+
+.. code:: bash
+
+    $ python setup.py sdist
+    $ pip install dist\restorething-x.x.x.tar.gz
+
+
+Install ``restorething`` from PyPI
+
+.. code:: bash
+
+    $ pip install restorething
+
+
 Usage
 -----
 In all of the following cases, if no hour is supplied the default time value is set to 23:59:59.
@@ -37,10 +54,8 @@ Restore closest file before 6am 15th August 2016, if no file is found, no file w
 
     $ restorething.py 20160815 -vd sync/.stversions -hr 6 -b
 
-
 Restore closest file no more than 10 hours before 6am 15th August 2016, if no file is found ``restorething`` will look for the closet file no more than 10 hours after 6am 15th August 2016.
 
 .. code:: bash
 
-$ restorething.py 20160815 -vd sync/.stversions -hr 6 -pm 10
-
+    $ restorething.py 20160815 -vd sync/.stversions -hr 6 -pm 10

@@ -15,6 +15,21 @@ Restore Modes
 * Filter dir with specific string
 
 
+Installation
+-------------
+Install ```restorething``` from source
+
+```bash
+    $ python setup.py sdist
+    $ pip install dist\restorething-x.x.x.tar.gz
+```
+
+Install ```restorething``` from PyPI
+```bash
+$ pip install restorething
+```
+
+
 Usage
 -----
 In all of the following cases, if no hour is supplied the default time value is set to 23:59:59.
