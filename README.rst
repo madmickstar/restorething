@@ -7,14 +7,14 @@ Restore Modes
 -------------
 ``restorething`` will restore files using the following modes
 
- * Nearest file before a specific date/time
- * Nearest file after a specific date/time
- * Nearest file before/after a specific date/time
+* Nearest file before a specific date/time
+* Nearest file after a specific date/time
+* Nearest file before/after a specific date/time
 
 ``restorething`` has filtering options
 
- * Filter files with specific string
- * Filter dir with specific string
+* Filter files with specific string
+* Filter dir with specific string
 
 
 Installation
