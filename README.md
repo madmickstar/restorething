@@ -36,20 +36,20 @@ In all of the following cases, if no hour is supplied the default time value is 
 
 Restore closest file before 6am 15th August 2016, if no file is found `restorething` will look for the closet file after 6am 15th August 2016.
 ```bash
-$ restorething.py 20160815 -vd sync/.stversions -hr 6
+$ python -m restorething 20160815 -vd sync/.stversions -hr 6
 ```
 
 Restore closest file after 6am 15th August 2016, if no file is found, no file will be restored.
 ```bash
-$ restorething.py 20160815 -vd sync/.stversions -hr 6 -a
+$ python -m restorething 20160815 -vd sync/.stversions -hr 6 -a
 ```
 
 Restore closest file before 6am 15th August 2016, if no file is found, no file will be restored.
 ```bash
-$ restorething.py 20160815 -vd sync/.stversions -hr 6 -b
+$ python -m restorething 20160815 -vd sync/.stversions -hr 6 -b
 ```
 
 Restore closest file no more than 10 hours before 6am 15th August 2016, if no file is found `restorething` will look for the closet file no more than 10 hours after 6am 15th August 2016.
 ```bash
-$ restorething.py 20160815 -vd sync/.stversions -hr 6 -pm 10
+$ python -m restorething 20160815 -vd sync/.stversions -hr 6 -pm 10
 ```
