@@ -28,7 +28,7 @@ def process_db(cur, cli_epoch, rest_dir, args):
     if args.filter_file is not None:
         logger.debug('Filtering based on file %s', args.filter_file)
     
-        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict
+        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict string matching filename
         cur.execute('''SELECT di.*, fo.* \
                     FROM tb_file_out fo \
                     INNER JOIN tb_dir_in di \
@@ -38,7 +38,7 @@ def process_db(cur, cli_epoch, rest_dir, args):
     elif args.filter_dir is not None:
         logger.debug('Filtering based on DIR %s', args.filter_dir)
         
-        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict
+        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict and string matching dir
         cur.execute('''SELECT di.*, fo.* \
                     FROM tb_file_out fo \
                     INNER JOIN tb_dir_in di \
@@ -221,7 +221,7 @@ def copy_files(ue_src_file, ue_dst_file, no_sim):
       logger.debug('Restore failed, source does not exist, dst = %s', ue_dst_file)
 
 
-def main(cli_epoch, abs_path, args):
+def main(cli_epoch, restdir_abs_path, args):
     '''
     Restore files from DB file
     '''
@@ -230,4 +230,4 @@ def main(cli_epoch, abs_path, args):
     con = rtdbtools.init_db(args.db_file)
     with con:
         cur = con.cursor()
-        process_db(cur, cli_epoch, abs_path, args)
+        process_db(cur, cli_epoch, restdir_abs_path, args)

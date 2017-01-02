@@ -26,8 +26,6 @@ Recover all versions of a single file - must keep date and time in filename
 '''
 
 def process_cli():
-    logger = logging.getLogger(__name__)
-    
     # processes cli arguments and usage guide
     parser = argparse.ArgumentParser(prog='restorething',
                     description='''Restore tool for syncthing''',
@@ -95,12 +93,22 @@ def process_cli():
                         default=None,
                         type=str,
                         metavar=('[string]'),
-                        help='Filter out specific file name, default = No filtering')
+                        help='Filter out specific filename, default = No filtering')
     g2.add_argument('-fd','--filter-dir',
                         default=None,
                         type=str,
                         metavar=('[string]'),
-                        help='Filter specific DIR, default = No filter')
+                        help='Filter specific DIR, default = No filtering')
+    g2.add_argument('-fa','--filter-allinstances',
+                        default=None,
+                        type=str,
+                        metavar=('[absolute path of file]'),
+                        help='Filter specific DIR and filename and restore all instances, default = No filtering')
+    g2.add_argument('-fb','--filter-dirandfile',
+                        default=None,
+                        type=str,
+                        metavar=('[absolute path of file]'),
+                        help='Filter specific DIR and filename, default = No filtering')
     parser.add_argument('-ns','--no-sim',
                         action="store_true",
                         help='No simulate, restore for real, default = disabled')
@@ -117,16 +125,68 @@ def process_cli():
                         version='%(prog)s v0.1.0')
 
     args = parser.parse_args()
-    logger.debug('CLI Arguments %s', args)
     return args
 
+    
+def validate_cli(args):
+    logger = logging.getLogger(__name__)
+    
+    # validate date string
+    try:
+        d = rttools.validate_cli_date(args.date)
+    except Exception, err:
+        logger.error('Validating user input - %s' % str(err))
+        sys.exit(1)
+       
+    # process time - was validated by argeparse       
+    h = rttools.process_cli_time(args.hour)
+    
+    # convert date and hour to epoch value
+    try:
+        cli_epoch = rttools.get_epoch(d, h)
+    except Exception, err:
+        logger.error('Validating user input - %s' % str(err))
+        sys.exit(1)
+
+    # check write permissions
+    try:
+        rttools.permissions(args)
+    except Exception, err:
+        logger.error('Permissions check - %s' % str(err))
+        sys.exit(1)
+       
+    # test restore dir path for .stfolder or .stversions    
+    restdir_abs_path = rttools.convert_to_abspath(args.restore_dir, 'Restore DIR')
+    if rttools.restoredir_check(restdir_abs_path, '.stfolder'):
+        rttools.warnuser()
+    elif rttools.restoredir_check(restdir_abs_path, '.stversions'):
+        rttools.warnuser()
+    else:
+        logger.debug('Restoring files to non syncthing operational dir')
+        
+    # test filters that require absolute path
+    if args.filter_allinstances is not None:
+        if not rttools.test_abs(args.filter_allinstances):
+            logger.error('File path is not absolute see user input -fa %s, exiting....', args.filter_allinstances)
+            sys.exit(1)
+        else:
+            logger.debug('Filter for all instances is absolute %s', args.filter_allinstances)
+    if args.filter_dirandfile is not None:
+        if not rttools.test_abs(args.filter_dirandfile):
+            logger.error('File path is not absolute see user input -fb %s, exiting....', args.filter_dirandfile)
+            sys.exit(1)
+        else:
+            logger.debug('Filter for both DIR and file is absolute %s', args.filter_dirandfile)
+
+    return cli_epoch, restdir_abs_path
+    
 
 def main():
     '''
     The main entry point of the application
     '''
 
-    # process arguments from warnuser
+    # process arguments from cli
     args = process_cli()
 
     # load the logging configuration
@@ -136,37 +196,18 @@ def main():
     except Exception, err:
         sys.stderr.write('ERROR: log config file - %s' % str(err))
         sys.exit(1)
-        
     logger = logging.getLogger(__name__)
     
     logger.debug('CLI Arguments %s', args)
-        
-    d = rttools.validate_cli_date(args.date)
-    h = rttools.process_cli_time(args.hour)
-    try:
-        cli_epoch = rttools.get_epoch(d, h)
-    except Exception, err:
-        sys.stderr.write('ERROR: %s' % str(err))
-        return 1
-
-    # check write permissions
-    rttools.permissions(args)
     
-    abs_path = rttools.convert_to_abspath(args.restore_dir, 'Restore DIR')
-    
-    # test restore dir path for .stfolder or .stversions    
-    if rttools.restoredir_check(abs_path, '.stfolder'):
-        rttools.warnuser()
-    elif rttools.restoredir_check(abs_path, '.stversions'):
-        rttools.warnuser()
-    else:
-        logger.debug('Restoring files to non syncthing operational dir')
+    # validate the cli
+    cli_epoch, restdir_abs_path = validate_cli(args)
 
     # Index the files
     dbindex.main(args.db_file, args.no_freeze, args.versions_dir)
 
     # Restore files from archive
-    dbrestore.main(cli_epoch, abs_path, args)
+    dbrestore.main(cli_epoch, restdir_abs_path, args)
 
 
 if __name__ == "__main__":

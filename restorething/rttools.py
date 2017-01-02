@@ -12,13 +12,28 @@ import datetime
 def validate_cli_date(date):
     # process date
     logger = logging.getLogger(__name__)
-    prog = re.compile('[1-2]\d{3}((0[1-9])|(1[0-2]))(0[1-9]|[12]\d|3[01])')
-    result = prog.match(str(date))
+    cli_date = str(date)
+    # year 1000-2999 followed by months with 31 days and then months with 30 days then feb with up to 28 days - 29 days is handled below
+    prog = re.compile('[1-2]\d{3}(((0[13578]|1[02])(0[1-9]|[12]\d|3[01]))|((0[469]|11)(0[1-9]|[12]\d|30))|(02(0[1-9]|1\d|2[0-8])))')
+    result = prog.match(cli_date)
     if result:
-        return str(date)
+        return cli_date
     else:
-        logger.error('Wrong date format %s, expecting YYYYMMDD', date)
-        sys.exit(1)
+        chars = re.compile('[1-2]\d{7}')
+        month = re.compile('\d{4}((0[1-9])|(1[0-2]))\d{2}')
+        feb = re.compile('[1-2]\d{3}0229')
+        if not chars.match(cli_date):
+            raise RuntimeError('Wrong date format %s, expecting 8 integers in format YYYYMMDD' % cli_date)
+        elif not month.match(cli_date):
+            raise RuntimeError('Wrong date %s, Month does not exist' % cli_date)
+        elif feb.match(cli_date):
+            cli_yr = cli_date[0:4]
+            if (int(cli_yr) % 4 == 0):
+                return cli_date
+            else:
+                raise RuntimeError('Wrong date %s, February did not have 29 days that year' % cli_date)
+        else:
+            raise RuntimeError('Wrong date %s, Incorrect amount of days for month' % cli_date)
 
 
 def process_cli_time(hour):
@@ -79,23 +94,20 @@ def permissions(args):
     
     if os.path.isdir(args.db_dir):
         if not check_write_dir(args.db_dir):
-            logger.error('Failed write access to DB folder %s exiting....', args.db_dir)
-            sys.exit(1)
+            raise RuntimeError('Failed write access to DB folder %s exiting....', args.db_dir)
+
     
     if os.path.isfile(args.db_file):
         if not check_write_file(args.db_file):
-            logger.error('Failed write access to DB file %s exiting....', args.db_file)
-            sys.exit(1)
+            raise RuntimeError('Failed write access to DB file %s exiting....', args.db_file)
     
     current_working_dir = os.getcwd()
     if not check_write_dir(current_working_dir):
-        logger.error('Failed write access in current working folder %s exiting....', current_working_dir)
-        sys.exit(1)
+        raise RuntimeError('Failed write access in current working folder %s exiting....', current_working_dir)
     
     if os.path.isdir(args.restore_dir):
         if not check_write_dir(args.restore_dir):
-            logger.error('Restore DIR exists, but you do not have write access %s exiting....', args.restore_dir)
-            sys.exit(1)
+            raise RuntimeError('Restore DIR exists, but you do not have write access %s exiting....', args.restore_dir)
         else:
             logger.debug('Restore DIR exists %s', args.restore_dir)
     elif not os.path.isdir(args.restore_dir):
@@ -103,8 +115,7 @@ def permissions(args):
             try:
                 os.makedirs(args.restore_dir)
             except:
-                logger.error('Failed to create restore folder %s exiting....', args.restore_dir)
-                sys.exit(1)
+                raise RuntimeError('Failed to create restore folder %s exiting....', args.restore_dir)
         else:
             logger.info('Simulating restore. Restore DIR does not exist, will need to create restore DIR %s', args.restore_dir)
     
@@ -120,6 +131,13 @@ def permissions(args):
     logger.info('Successfully passed stversion read access test')
 
 
+def test_abs(test_dir):
+    # check if dir is absolute
+    if not os.path.isabs(test_dir):
+        return False
+    return True
+    
+    
 def convert_to_abspath(rest_dir, comment='DIR'):
     # check if DIR is relative or absolute
     logger = logging.getLogger(__name__)

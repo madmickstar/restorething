@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import os
 import sys
 import re
@@ -43,7 +44,7 @@ def validate_ini(logging_file):
 
 
 def create_ini(logging_file, console_level="INFO"):
-    print "::\n:: Adding logging config  to " + logging_file + "\n::"
+    print "::\n:: Adding logging config to " + logging_file + "\n::"
     config = ConfigParser.RawConfigParser()
     '''
     loggers settings
