@@ -11,10 +11,10 @@ import time
 import datetime
 
 
-def process_db_mod_time(frz_time, dbfile):
+def process_db_mod_time(frz_time, database_file):
     logger = logging.getLogger(__name__)
     try:
-        file_mod_time = round(os.stat(dbfile).st_mtime)
+        file_mod_time = round(os.stat(database_file).st_mtime)
         current_time = int(time.time())
     except:
         logger.error('Failed to Calc DB mod time')
@@ -28,17 +28,17 @@ def process_db_mod_time(frz_time, dbfile):
         return False
 
 
-def init_db(dbfile):
+def init_db(database_file):
     # Connect to DB file on disk
     logger = logging.getLogger(__name__)
     try:
-        con = sqlite3.connect(dbfile)
+        con = sqlite3.connect(database_file)
         con.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
     except:
-        print 'Error initialising, exiting...' + dbfile
-        logger.error('Could not initialise DB %s, exiting...', dbfile)
+        print 'Error initialising, exiting...' + database_file
+        logger.error('Could not initialise DB %s, exiting...', database_file)
         sys.exit(1)
-    logger.info('Successfully initialised DB file %s', dbfile)
+    logger.info('Successfully initialised DB file %s', database_file)
     return con
 
 

@@ -243,13 +243,13 @@ def copy_files(ue_src_file, ue_dst_file, no_sim):
       logger.debug('Restore failed, source does not exist, dst = %s', ue_dst_file)
 
 
-def main(cli_epoch, restdir_abs_path, args):
+def main(database_file, cli_epoch, restdir_abs_path, args):
     '''
     Restore files from DB file
     '''
     logger = logging.getLogger(__name__)
     logger.info('Starting restore process')
-    con = rtdbtools.init_db(args.db_file)
+    con = rtdbtools.init_db(database_file)
     with con:
         cur = con.cursor()
         cur, row_out = db_getrowout(cur, args)

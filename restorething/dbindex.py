@@ -116,7 +116,7 @@ def index_files_ondisk(cur, versdir):
             last_id_root, last_id_fo, last_root, last_file_nodate = rtdbtools.update_last_variables(id_root, id_fo, root, file_nodate)
 
 
-def main(dbfile, nofrz, versdir):
+def main(database_file, nofrz, versdir):
     '''
     Index DB file
     '''
@@ -126,13 +126,13 @@ def main(dbfile, nofrz, versdir):
     if nofrz:
         db_mod_time = True
     else:
-        db_mod_time = rtdbtools.process_db_mod_time(frz_time, dbfile)
+        db_mod_time = rtdbtools.process_db_mod_time(frz_time, database_file)
 
     if db_mod_time:
         logger.info('Generating a fresh DB file')
         ## init db and cursor - create tables
         tic = int(time.clock())
-        con = rtdbtools.init_db(dbfile)
+        con = rtdbtools.init_db(database_file)
         with con:
             cur = con.cursor()
             rtdbtools.create_db(cur)

@@ -43,8 +43,13 @@ def validate_ini(logging_file):
             raise RuntimeError('ini has an error. Reason: %s section does not exist' % fk)
 
 
-def create_ini(logging_file, console_level="INFO"):
+def create_ini(working_dir, logging_file, console_level="INFO"):
     print "::\n:: Adding logging config to " + logging_file + "\n::"
+
+    info_log = os.path.join(working_dir, 'info.log')
+    error_log = os.path.join(working_dir, 'error.log')
+    debug_log = os.path.join(working_dir, 'debug.log')
+
     config = ConfigParser.RawConfigParser()
     '''
     loggers settings
@@ -80,19 +85,19 @@ def create_ini(logging_file, console_level="INFO"):
     config.set('handler_info_file', 'level', "INFO")
     config.set('handler_info_file', 'formatter', "simple")
     config.set('handler_info_file', 'encoding', "utf8")
-    config.set('handler_info_file', 'args', "('info.log', 'w')")
+    config.set('handler_info_file', 'args', "('"+info_log+"', 'w')")
     config.add_section('handler_error_file')
     config.set('handler_error_file', 'class', "FileHandler")
     config.set('handler_error_file', 'level', "ERROR")
     config.set('handler_error_file', 'formatter', "simple")
     config.set('handler_error_file', 'encoding', "utf8")
-    config.set('handler_error_file', 'args', "('error.log', 'w')")
+    config.set('handler_error_file', 'args', "('"+error_log+"', 'w')")
     config.add_section('handler_debug_file')
     config.set('handler_debug_file', 'class', "FileHandler")
     config.set('handler_debug_file', 'level', "DEBUG")
     config.set('handler_debug_file', 'formatter', "precise")
     config.set('handler_debug_file', 'encoding', "utf8")
-    config.set('handler_debug_file', 'args', "('debug.log', 'w')")
+    config.set('handler_debug_file', 'args', "('"+debug_log+"', 'w')")
     '''
     formatter_* settings
     '''
@@ -116,31 +121,65 @@ def create_ini(logging_file, console_level="INFO"):
         raise RuntimeError('ERROR: Failed to create logging config file, Reason: %s' % err)
 
 
-def main(args):
-    current_working_dir = os.getcwd()
-    if not rttools.check_write_dir(current_working_dir):
-        sys.stderr.write('ERROR: Failed write access in current working folder %s exiting....' % current_working_dir)
-        sys.exit(1)
+#def process_log_dir():
+#
+#    home_dir = os.path.expanduser('~')
+#    logging_dir = os.path.join(home_dir, '.restorething')
+#
+#    if os.path.isdir(logging_dir):
+#        if not rttools.check_write_dir(logging_dir):
+#            sys.stderr.write('ERROR: Failed write access to logging folder %s, exiting....' % logging_dir)
+#            sys.exit(1)
+#    else:
+#        if not os.path.isdir(home_dir):
+#            sys.stderr.write('ERROR: Failed to find HOME DIR %s, exiting....' % home_dir)
+#            sys.exit(1)
+#        else:
+#            if not rttools.check_write_dir(home_dir):
+#                sys.stderr.write('ERROR: Failed write access to HOME DIR %s, exiting....' % home_dir)
+#                sys.exit(1)
+#            else:
+#                # create logging dir
+#                try:
+#                    os.makedirs(logging_dir)
+#                    #logger.debug('Created logging DIR %s', logging_dir)
+#                except:
+#                    sys.stderr.write('ERROR: Failed to create logging DIR %s, exiting....' % logging_dir)
+#                    sys.exit(1)
+#
+#    return logging_dir
+
+
+def main(working_dir, args):
+
+    #logging_dir = process_log_dir()
 
     if args.debug:
-        logging_file='logging_debug.ini'
-        create_ini(logging_file, "DEBUG")
-    else:
-        logging_file='logging.ini'
-        if logging_file not in os.listdir('.'):
+        logging_ini = 'logging_debug.ini'
+        logging_file = os.path.join(working_dir, logging_ini)
+        if logging_ini not in os.listdir(working_dir):
             try:
-                create_ini(logging_file)
+                create_ini(working_dir, logging_file, "DEBUG")
             except Exception, err:
-                sys.stderr.write('ERROR: %s' % str(err))
+                sys.stderr.write('ERROR: Failed to create logging config file, %s' % str(err))
+                sys.exit(1)
+    else:
+        logging_ini = 'logging.ini'
+        logging_file = os.path.join(working_dir, logging_ini)
+        if logging_ini not in os.listdir(working_dir):
+            try:
+                create_ini(working_dir, logging_file)
+            except Exception, err:
+                sys.stderr.write('ERROR: Failed to create logging config file, %s' % str(err))
                 sys.exit(1)
         else:
             try:
                 validate_ini(logging_file)
             except Exception, err:
-                sys.stderr.write('ERROR: %s' % str(err))
+                sys.stderr.write('ERROR: Logging config file failed validation, %s' % str(err))
                 sys.exit(1)
     return logging_file
-
-
-if __name__ == "__main__":
-    main()
+#
+#
+#if __name__ == "__main__":
+#    main()

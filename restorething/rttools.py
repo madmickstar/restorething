@@ -9,6 +9,34 @@ import logging
 import datetime
 
 
+def process_working_dir():
+    # prep working dir in users home DIR
+    home_dir = os.path.expanduser('~')
+    working_dir = os.path.join(home_dir, '.restorething')
+
+    if os.path.isdir(working_dir):
+        if not check_write_dir(working_dir):
+            sys.stderr.write('ERROR: Failed write access to logging folder %s, exiting....' % working_dir)
+            sys.exit(1)
+    else:
+        if not os.path.isdir(home_dir):
+            sys.stderr.write('ERROR: Failed to find HOME DIR %s, exiting....' % home_dir)
+            sys.exit(1)
+        else:
+            if not check_write_dir(home_dir):
+                sys.stderr.write('ERROR: Failed write access to HOME DIR %s, exiting....' % home_dir)
+                sys.exit(1)
+            else:
+                # create logging dir
+                try:
+                    os.makedirs(working_dir)
+                except:
+                    sys.stderr.write('ERROR: Failed to create logging DIR %s, exiting....' % working_dir)
+                    sys.exit(1)
+
+    return working_dir
+
+
 def validate_cli_date(date):
     # process date
     logger = logging.getLogger(__name__)

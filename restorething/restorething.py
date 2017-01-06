@@ -185,12 +185,13 @@ def main():
     '''
     The main entry point of the application
     '''
-
     # process arguments from cli
     args = process_cli()
 
+    working_dir = rttools.process_working_dir()
+
     # load the logging configuration
-    logging_file = rtlog.main(args)
+    logging_file = rtlog.main(working_dir, args)
     try:
         logging.config.fileConfig(logging_file, disable_existing_loggers=False)
     except Exception, err:
@@ -203,11 +204,10 @@ def main():
     # validate the cli
     cli_epoch, restdir_abs_path = validate_cli(args)
 
-    # Index the files
-    dbindex.main(args.db_file, args.no_freeze, args.versions_dir)
-
-    # Restore files from archive
-    dbrestore.main(cli_epoch, restdir_abs_path, args)
+    # index and filter database
+    database_file = os.path.join(working_dir, args.db_file)
+    dbindex.main(database_file, args.no_freeze, args.versions_dir)
+    dbrestore.main(database_file, cli_epoch, restdir_abs_path, args)
 
 
 if __name__ == "__main__":
