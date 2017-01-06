@@ -121,35 +121,6 @@ def create_ini(working_dir, logging_file, console_level="INFO"):
         raise RuntimeError('ERROR: Failed to create logging config file, Reason: %s' % err)
 
 
-#def process_log_dir():
-#
-#    home_dir = os.path.expanduser('~')
-#    logging_dir = os.path.join(home_dir, '.restorething')
-#
-#    if os.path.isdir(logging_dir):
-#        if not rttools.check_write_dir(logging_dir):
-#            sys.stderr.write('ERROR: Failed write access to logging folder %s, exiting....' % logging_dir)
-#            sys.exit(1)
-#    else:
-#        if not os.path.isdir(home_dir):
-#            sys.stderr.write('ERROR: Failed to find HOME DIR %s, exiting....' % home_dir)
-#            sys.exit(1)
-#        else:
-#            if not rttools.check_write_dir(home_dir):
-#                sys.stderr.write('ERROR: Failed write access to HOME DIR %s, exiting....' % home_dir)
-#                sys.exit(1)
-#            else:
-#                # create logging dir
-#                try:
-#                    os.makedirs(logging_dir)
-#                    #logger.debug('Created logging DIR %s', logging_dir)
-#                except:
-#                    sys.stderr.write('ERROR: Failed to create logging DIR %s, exiting....' % logging_dir)
-#                    sys.exit(1)
-#
-#    return logging_dir
-
-
 def main(working_dir, args):
 
     #logging_dir = process_log_dir()
@@ -179,7 +150,3 @@ def main(working_dir, args):
                 sys.stderr.write('ERROR: Logging config file failed validation, %s' % str(err))
                 sys.exit(1)
     return logging_file
-#
-#
-#if __name__ == "__main__":
-#    main()
