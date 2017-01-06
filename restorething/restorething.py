@@ -127,20 +127,20 @@ def process_cli():
     args = parser.parse_args()
     return args
 
-    
+
 def validate_cli(args):
     logger = logging.getLogger(__name__)
-    
+
     # validate date string
     try:
         d = rttools.validate_cli_date(args.date)
     except Exception, err:
         logger.error('Validating user input - %s' % str(err))
         sys.exit(1)
-       
-    # process time - was validated by argeparse       
+
+    # process time - was validated by argeparse
     h = rttools.process_cli_time(args.hour)
-    
+
     # convert date and hour to epoch value
     try:
         cli_epoch = rttools.get_epoch(d, h)
@@ -154,8 +154,8 @@ def validate_cli(args):
     except Exception, err:
         logger.error('Permissions check - %s' % str(err))
         sys.exit(1)
-       
-    # test restore dir path for .stfolder or .stversions    
+
+    # test restore dir path for .stfolder or .stversions
     restdir_abs_path = rttools.convert_to_abspath(args.restore_dir, 'Restore DIR')
     if rttools.restoredir_check(restdir_abs_path, '.stfolder'):
         rttools.warnuser()
@@ -163,7 +163,7 @@ def validate_cli(args):
         rttools.warnuser()
     else:
         logger.debug('Restoring files to non syncthing operational dir')
-        
+
     # test filters that require absolute path
     if args.filter_allinstances is not None:
         if not rttools.test_abs(args.filter_allinstances):
@@ -179,7 +179,7 @@ def validate_cli(args):
             logger.debug('Filter for both DIR and file is absolute %s', args.filter_dirandfile)
 
     return cli_epoch, restdir_abs_path
-    
+
 
 def main():
     '''
@@ -197,9 +197,9 @@ def main():
         sys.stderr.write('ERROR: log config file - %s' % str(err))
         sys.exit(1)
     logger = logging.getLogger(__name__)
-    
+
     logger.debug('CLI Arguments %s', args)
-    
+
     # validate the cli
     cli_epoch, restdir_abs_path = validate_cli(args)
 

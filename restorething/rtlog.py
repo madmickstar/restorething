@@ -19,7 +19,7 @@ def validate_ini(logging_file):
 
     h = re.split('[ ,]{1,2}',parser.get('handlers', 'keys'))
     f = re.split('[ ,]{1,2}',parser.get('formatters', 'keys'))
-    
+
     h_class = ('FileHandler','StreamHandler')
     h_level = ('info','warning','error','debug','critical')
     for key in (h):
@@ -36,7 +36,7 @@ def validate_ini(logging_file):
                 raise RuntimeError('ini has an error. Reason: %s bad value formatter = %s' % (hk, hk_format))
         else:
             raise RuntimeError('ini has an error. Reason: %s section does not exist' % hk)
- 
+
     for key in (f):
         fk = 'formatter_'+key
         if fk not in parser.sections():

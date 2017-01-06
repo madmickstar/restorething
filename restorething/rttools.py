@@ -51,7 +51,7 @@ def get_epoch(f_date, f_time):
     # expects date and time in the following format 20160101 235400
     # returns time in GMT
     logger = logging.getLogger(__name__)
-    
+
     f_yr = f_date[0:4]
     f_mth = f_date[4:6]
     f_dy = f_date[6:8]
@@ -91,20 +91,20 @@ def check_exists_file(test_file):
 def permissions(args):
     # check write permissions
     logger = logging.getLogger(__name__)
-    
+
     if os.path.isdir(args.db_dir):
         if not check_write_dir(args.db_dir):
             raise RuntimeError('Failed write access to DB folder %s exiting....', args.db_dir)
 
-    
+
     if os.path.isfile(args.db_file):
         if not check_write_file(args.db_file):
             raise RuntimeError('Failed write access to DB file %s exiting....', args.db_file)
-    
+
     current_working_dir = os.getcwd()
     if not check_write_dir(current_working_dir):
         raise RuntimeError('Failed write access in current working folder %s exiting....', current_working_dir)
-    
+
     if os.path.isdir(args.restore_dir):
         if not check_write_dir(args.restore_dir):
             raise RuntimeError('Restore DIR exists, but you do not have write access %s exiting....', args.restore_dir)
@@ -118,7 +118,7 @@ def permissions(args):
                 raise RuntimeError('Failed to create restore folder %s exiting....', args.restore_dir)
         else:
             logger.info('Simulating restore. Restore DIR does not exist, will need to create restore DIR %s', args.restore_dir)
-    
+
     logger.info('Successfully passed all write access tests')
 
 
@@ -127,7 +127,7 @@ def permissions(args):
         # print '''\nWalking directory "''' + args.versions_dir + '''" is not readable, exiting...'''
         logger.error('Read permissions of %s failed check exiting....', args.versions_dir)
         sys.exit(1)
-    
+
     logger.info('Successfully passed stversion read access test')
 
 
@@ -136,8 +136,8 @@ def test_abs(test_dir):
     if not os.path.isabs(test_dir):
         return False
     return True
-    
-    
+
+
 def convert_to_abspath(rest_dir, comment='DIR'):
     # check if DIR is relative or absolute
     logger = logging.getLogger(__name__)
@@ -150,9 +150,9 @@ def convert_to_abspath(rest_dir, comment='DIR'):
     else:
         abs_path = rest_dir
         logger.debug('%s is absolute %s', comment, abs_path)
-    return abs_path  
-    
- 
+    return abs_path
+
+
 def restoredir_check(abs_path, sync_dir):
     logger = logging.getLogger(__name__)
     logger.debug('Checking for %s in restore DIR path %s', sync_dir, abs_path)
@@ -188,12 +188,12 @@ def warnuser():
         logger.debug('User acknowledged warning and chose to continue')
         print '''Continuing...'''
 
-  
+
 def format_time(seconds):
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
     return str("%02d:%02d:%02d" % (h, m, s))
-    
+
 
 def get_min_max_epoch(cli_epoch, plusminus):
   # calc min max epoch and return it
@@ -201,38 +201,39 @@ def get_min_max_epoch(cli_epoch, plusminus):
   epoch_max = cli_epoch + plus_minus_seconds
   epoch_min = cli_epoch - plus_minus_seconds
   return epoch_min, epoch_max
-      
-      
+
+
 def get_before_epoch(cli_epoch, result_list):
   try:
     closest_numbers = filter(lambda x: x<=cli_epoch, result_list)
-  except:
-    closest_numbers = []        
-  return closest_numbers
- 
-
-def get_after_epoch(cli_epoch, result_list):
-  try:
-    closest_numbers = filter(lambda x: x>=cli_epoch, result_list) 
   except:
     closest_numbers = []
   return closest_numbers
 
 
+def get_after_epoch(cli_epoch, result_list):
+    try:
+        closest_numbers = filter(lambda x: x>=cli_epoch, result_list)
+    except:
+        closest_numbers = []
+    return closest_numbers
+
+
 def get_epochs_btw_min_max(epoch_min, epoch_max, result_list):
-  try:
-    min_max_result_list = filter(lambda x: epoch_min <= x <= epoch_max, result_list)
-  except:
-    min_max_result_list = []        
-  return min_max_result_list
-  
-  
+    try:
+        min_max_result_list = filter(lambda x: epoch_min <= x <= epoch_max, result_list)
+    except:
+        min_max_result_list = []
+    return min_max_result_list
+
+
 def check_file_exists(relative_file):
-  # expects filename encoded the same as OS - UTF-8 encoded probably
-  try: 
-    if os.path.isfile(relative_file):
-      return True
-    else:
-      return False
-  except:
-    return False
+    # expects filename encoded the same as OS - UTF-8 encoded probably
+    try:
+        if os.path.isfile(relative_file):
+            return True
+        else:
+            return False
+    except:
+        return False
+
