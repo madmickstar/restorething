@@ -67,7 +67,7 @@ date | integer | YYYYMMDD |  | Date to restore files, date will be used to find 
 -pm | integer | -pm {0-2147483647} | 0 | Limit restore of files to plus/minus hours each side of the supplied date and hour
 -vd | string | -vd {absolute or relative path of DIR} | .stversions | Sets the location of the syncthing versioning folder, by default script looks in directory script is run from
 -rd | string | -rd {absolute or relative path of DIR} | restore | Enables the ability to restore to a location other than the default
--dd | string | -dd {absolute or relative path of DIR} | \user\homedir\\.restorething | Enables the ability to use a database file in a different location, default behaviour is to store database file in users home directory
+-dd | string | -dd {absolute or relative path of DIR} | \home\username\\.restorething | Enables the ability to use a database file in a different location, default behaviour is to store database file in users home directory
 -df | string | -df {filename} | st_restore.sqlite | Enables the ability to use a database file with a different name
 -nf | switch | -nf | disabled | Enables indexing archived files every time script is run, by default script will reuse existing DB file for 24 hours
 -nd | switch | -nd | disabled | Enables restoring files that have been deleted or changed due to renaming, by default deleted or renamed files are not included in restore
