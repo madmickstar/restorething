@@ -32,28 +32,6 @@ $ pip install restorething
 
 Usage
 -----
-In all of the following cases, if no hour is supplied the default time value is set to 12:00:00.
-
-Restore closest file before 6am 15th August 2016, if no file is found `restorething` will look for the closet file after 6am 15th August 2016.
-```bash
-$ python -m restorething 20160815 -vd sync/.stversions -hr 6
-```
-
-Restore closest file after 6am 15th August 2016, if no file is found, no file will be restored.
-```bash
-$ python -m restorething 20160815 -vd sync/.stversions -hr 6 -a
-```
-
-Restore closest file before 6am 15th August 2016, if no file is found, no file will be restored.
-```bash
-$ python -m restorething 20160815 -vd sync/.stversions -hr 6 -b
-```
-
-Restore closest file no more than 10 hours before 6am 15th August 2016, if no file is found `restorething` will look for the closet file no more than 10 hours after 6am 15th August 2016.
-```bash
-$ python -m restorething 20160815 -vd sync/.stversions -hr 6 -pm 10
-```
-
 ```bash
 $ python -m restorething {date [ -hr {0-24} | -b | -a | -pm {int} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} | -fa {path and filename}] | -d | --version]}
 ```
@@ -79,3 +57,28 @@ date | integer | YYYYMMDD |  | Date to restore files, date will be used to find 
 -fa | string | -fa {absolute path of file} | disabled | Recovers all versions of a file ignoring any date and times specified
 -d | switch | -d | disabled | Enables debug output to console
 --version | switch | --version | disabled | Displays version
+
+
+Examples
+--------
+In all of the following cases, if no hour is supplied the default time value is set to 12:00:00.
+
+Restore closest file before 6am 15th August 2016, if no file is found `restorething` will look for the closet file after 6am 15th August 2016.
+```bash
+$ python -m restorething 20160815 -hr 6 -vd sync/.stversions 
+```
+
+Restore closest file after 6am 15th August 2016, if no file is found, no file will be restored.
+```bash
+$ python -m restorething 20160815 -hr 6 -a -vd sync/.stversions
+```
+
+Restore closest file before 6am 15th August 2016, if no file is found, no file will be restored.
+```bash
+$ python -m restorething 20160815 -hr 6 -b -vd sync/.stversions
+```
+
+Restore closest file no more than 10 hours before 6am 15th August 2016, if no file is found `restorething` will look for the closet file no more than 10 hours after 6am 15th August 2016.
+```bash
+$ python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions
+```

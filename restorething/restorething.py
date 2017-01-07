@@ -31,16 +31,12 @@ def process_cli(working_dir, version):
                     description='''Restore tool for syncthing''',
                     epilog='''Command line examples \n\n \
                     POSIX Users \n \
-                    python -m restorething 20160815 -vd sync/.stversions -hr 6 \n \
-                    python -m restorething 20160815 -vd sync/.stversions -hr 6 -a \n \
-                    python -m restorething 20160815 -vd sync/.stversions -hr 6 -b \n \
-                    python -m restorething 20160815 -vd sync/.stversions -hr 6 -pm 10 -ns -rd test \n \
+                    python -m restorething 20160815 -hr 6 -vd sync/.stversions \n \
+                    python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions -ns -rd test \n \
                      \n \
                     Windows Users \n \
-                    python -m restorething 20160815 -vd sync\\.stversions -hr 6 \n \
-                    python -m restorething 20160815 -vd sync\\.stversions -hr 6 -a \n \
-                    python -m restorething 20160815 -vd sync\\.stversions -hr 6 -b \n \
-                    python -m restorething 20160815 -vd sync\\.stversions -hr 6 -pm 10 -ns -rd test''',
+                    python -m restorething 20160815 -hr 6 -vd sync\\.stversions \n \
+                    python -m restorething 20160815 -hr 6 -pm 10 -vd sync\\.stversions -ns -rd test''',
                     formatter_class=RawTextHelpFormatter)
     g1 = parser.add_mutually_exclusive_group()
     g2 = parser.add_mutually_exclusive_group()
