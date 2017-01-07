@@ -7,6 +7,7 @@ import re
 import time
 import logging
 import datetime
+from codecs import open
 
 
 def process_working_dir():
@@ -37,6 +38,16 @@ def process_working_dir():
     return working_dir
 
 
+def get_version(path):
+    with open(path, encoding='utf-8') as f:
+        version_file = f.read()
+    regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
+    version_match = re.search(regex, version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError('Unable to find version string in %s.', version_file)
+    
+    
 def validate_cli_date(date):
     # process date
     logger = logging.getLogger(__name__)
@@ -67,7 +78,7 @@ def validate_cli_date(date):
 def process_cli_time(hour):
     # process hour
     if hour == 0:
-        hour = str(235959)
+        hour = str(000000)
     elif hour <= 9:
         hour = '0' + str(hour) + '0000'
     else:

@@ -25,7 +25,7 @@ To do list
 Recover all versions of a single file - must keep date and time in filename
 '''
 
-def process_cli():
+def process_cli(working_dir, version):
     # processes cli arguments and usage guide
     parser = argparse.ArgumentParser(prog='restorething',
                     description='''Restore tool for syncthing''',
@@ -49,11 +49,11 @@ def process_cli():
                         metavar=('date {YYYYMMDD}'),
                         help='Date to restore files, date will be used to find closest file before or after date')
     parser.add_argument('-hr', '--hour',
-                        default='0',
+                        default='12',
                         type=int,
                         choices=range(0, 24),
                         metavar=('[0..24]'),
-                        help='Hour to restore files, time will be used to find closest file before or after time - Default=0, 0 = 23:59, 15 = 15:00, 2 = 2:00')
+                        help='Hour to restore files, time will be used to find closest file before or after time - Default = 12, 0 = 12am, 12 = 12pm, 17 = 5pm')
     g1.add_argument('-pm', '--plus-minus',
                         default='0',
                         type=int,
@@ -69,16 +69,21 @@ def process_cli():
                         default='.stversions',
                         type=str,
                         metavar=('[dir]'),
-                        help='Versioning directory to walk, default = .stversions')
-    parser.add_argument('-dd', '--db-dir',
-                        default='./',
+                        help='Versioning directory to index, default = .stversions')
+    parser.add_argument('-rd','--restore-dir',
+                        default='restore',
                         type=str,
                         metavar=('[dir path]'),
-                        help='Directory to find DB file, default = ./')
+                        help='Restore DIR, default = restore')
+    parser.add_argument('-dd', '--db-dir',
+                        default=working_dir,
+                        type=str,
+                        metavar=('[dir path]'),
+                        help='Directory to find DB file, default = %s' % working_dir)
     parser.add_argument('-df', '--db-file',
                         default='st_restore.sqlite',
                         type=str,
-                        metavar=('[file path]'),
+                        metavar=('[filename]'),
                         help='DB file name, default = st_restore.sqlite')
     parser.add_argument('-nf', '--no-freeze',
                         action="store_true",
@@ -89,6 +94,9 @@ def process_cli():
     parser.add_argument('-ic', '--inc-conflict',
                         action="store_true",
                         help='Inc conflict files in restore, default = disabled')
+    parser.add_argument('-ns','--no-sim',
+                        action="store_true",
+                        help='No simulate, restore for real, default = disabled')
     g2.add_argument('-ff', '--filter-file',
                         default=None,
                         type=str,
@@ -109,20 +117,12 @@ def process_cli():
                         type=str,
                         metavar=('[absolute path of file]'),
                         help='Filter specific DIR and filename, default = No filtering')
-    parser.add_argument('-ns','--no-sim',
-                        action="store_true",
-                        help='No simulate, restore for real, default = disabled')
-    parser.add_argument('-rd','--restore-dir',
-                        default='restore',
-                        type=str,
-                        metavar=('[dir path]'),
-                        help='Restore DIR, default = restore')
     parser.add_argument('-d', '--debug',
                         action="store_true",
-                        help='Enable program flow debug to console')
+                        help='Enable debug output to console')
     parser.add_argument('--version',
                         action='version',
-                        version='%(prog)s v0.1.0')
+                        version='%(prog)s v'+version)
 
     args = parser.parse_args()
     return args
@@ -185,10 +185,16 @@ def main():
     '''
     The main entry point of the application
     '''
-    # process arguments from cli
-    args = process_cli()
-
+    
     working_dir = rttools.process_working_dir()
+    try:
+        version=rttools.get_version('_version.py')
+    except Exception, err:
+        sys.stderr.write('ERROR: %s' % str(err))
+        sys.exit(1)
+    
+    # process arguments from cli
+    args = process_cli(working_dir, version)
 
     # load the logging configuration
     logging_file = rtlog.main(working_dir, args)
