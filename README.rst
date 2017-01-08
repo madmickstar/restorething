@@ -41,7 +41,7 @@ Installation
 Usage
 -----
 
-``$ python -m restorething {**date** [ **-hr** *{0-24}* | -b | -a | -pm {int} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} | -fa {path and filename}] | -d | --version]}``
+``$ python -m restorething { date [ -hr {0-24} | -b | -a | -pm {int} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} | -fa {path and filename} ] | -d | --version] }``
 
 +------------+---------+-----------+------------+--------------+
 | Argument   | Type    | Format    | Default    | Description  |
@@ -233,11 +233,11 @@ Default behaviour
    older (before) than supplied date/time. If nothing is found, the
    script looks for the closest file younger (after) than supplied
    date/time. The default behaviour can be limited to plus/minus hours
-   by supplying ``-pm {hours}`` argument or changed to only reviewing
+   by supplying ``-pm {hours}`` argument or changed to only looking
    before or after supplied date/time by using the ``-b`` or ``-a``
    flags, respectively.
 -  If no hour is supplied the default time value the script uses is
-   12pm. this canbe changed by using the ``-hr {0-24}`` argument
+   12pm. This can be changed by using the ``-hr {0-24}`` argument
 -  The script will always simulate a restore by default giving the user
    an opportunity to review any detected warnings. By supplying the -ns
    flag, the user can enable the no simulation mode and do an actual
@@ -281,11 +281,12 @@ path to where the script is being called from.
 
 Restore closest file no more than 10 hours before 6am 15th August 2016,
 if no file is found ``restorething`` will look for the closet file no
-more than 10 hours after 6am 15th August 2016.
+more than 10 hours after 6am 15th August 2016. Versioning directory is
+supplied as a relative path to where the script is being called from.
 
 .. code:: bash
 
-    $ python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions. Versioning directory is supplied as a relative path to where the script is being called from. 
+    $ python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions. 
 
 Restore all instances of a file located in directory
 ``/some/important/directory/``, named ``file.txt``. Current script
