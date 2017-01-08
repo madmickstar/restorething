@@ -8,12 +8,14 @@ Restorething
 Restore Modes
 -------------
 `restorething` will restore files using the following modes
+
 * Nearest file before/after a specific date/time (default behaviour)
 * Nearest file before a specific date/time
 * Nearest file after a specific date/time
 * All instances of a specific file with no date/time restriction
 
 `restorething` has filtering options
+
 * Filter files with specific string
 * Filter dir with specific string
 * Filter both dir and file with specific string
@@ -22,10 +24,9 @@ Restore Modes
 Installation
 -------------
 ```restorething``` from source
-
 ```bash
-    $ python setup.py sdist
-    $ pip install dist\restorething-x.x.x.tar.gz
+$ python setup.py sdist
+$ pip install dist\restorething-x.x.x.tar.gz
 ```
 
 ```restorething``` from PyPI
@@ -40,17 +41,17 @@ Usage
 $ python -m restorething { date [ -hr {0-24} | -b | -a | -pm {int} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} | -fa {path and filename} ] | -d | --version] }
 `
 
-Argument | Type | Format | Default | Description
----------|------|--------|---------|------------
-date | integer | YYYYMMDD |  | Date to restore files, date will be used to find closest file before or after date
+Argument  | Type   | Format        | Default                    | Description
+----------|--------|---------------|----------------------------|--------------------
+date | integer | YYYYMMDD | No default value. Field must be supplied by user | Date to restore files, date will be used to find closest file before or after date
 -hr | integer | -hr {0-24} | 12 | Hour to compare file's modification time
 -b | switch | -b | disabled | Limit restore of files to before the supplied date and hour
 -a | switch | -a | disabled | Limit restore of files to after the supplied date and hour
 -pm | integer | -pm {0-2147483647 hrs} | 0 | Limit restore of files to plus/minus hours each side of the supplied date and hour
 -vd | string | -vd {absolute or relative path of DIR} | .stversions | Sets the location of the syncthing versioning folder, by default script looks in directory script is run from
 -rd | string | -rd {absolute or relative path of DIR} | restore | Enables the ability to restore to a location other than the default
--dd | string | -dd {absolute or relative path of DIR} | \home\username\\.restorething | Enables the ability to use a database file in a different location, default behaviour is to store database file in users home directory
--df | string | -df {filename} | st_restore.sqlite | Enables the ability to use a database file with a different name
+-dd | string | -dd {absolute or relative path of DIR} | /home/name/.restorething | Enables the ability to use a database file in a different location, default behaviour is to store database file in users home directory
+-df | string | -df {filename} | restorething.db | Enables the ability to use a database file with a different name
 -nf | switch | -nf | disabled | Enables indexing archived files every time script is run, by default script will reuse existing DB file for 24 hours
 -nd | switch | -nd | disabled | Enables restoring files that have been deleted or changed due to renaming, by default deleted or renamed files are not included in restore
 -ic | switch | -ic | disabled | Enables restoring files that were marked as conflict files by syncthing and deleted by user, by default conflict files are not restored
@@ -73,10 +74,8 @@ Default behaviour
 * All config, log and database files are stored in user's home directory under the directory named .restorething.
 
 
-
 Examples
 --------
-
 Restore closest file before 6am 15th August 2016, if no file is found restore closet file after 6am 15th August 2016. Due to not supplying versioning directory, script will need to be called from directory containing versioning directory
 ```bash
 $ python -m restorething 20160815 -hr 6
@@ -94,7 +93,7 @@ $ python -m restorething 20160815 -hr 6 -b -vd sync/.stversions
 
 Restore closest file no more than 10 hours before 6am 15th August 2016, if no file is found `restorething` will look for the closet file no more than 10 hours after 6am 15th August 2016. Versioning directory is supplied as a relative path to where the script is being called from.
 ```bash
-$ python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions. 
+$ python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions
 ```
 
 Restore all instances of a file located in directory `/some/important/directory/`, named `file.txt`. Current script limitation is you have to supply a date, although it will be ignored. 

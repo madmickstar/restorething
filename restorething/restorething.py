@@ -77,10 +77,10 @@ def process_cli(working_dir, version):
                         metavar=('{dir path}'),
                         help='Directory to find DB file, default = %s' % working_dir)
     parser.add_argument('-df', '--db-file',
-                        default='st_restore.sqlite',
+                        default='restorething.db',
                         type=str,
                         metavar=('{filename}'),
-                        help='DB file name, default = st_restore.sqlite')
+                        help='DB file name, default = restorething.db')
     parser.add_argument('-nf', '--no-freeze',
                         action="store_true",
                         help='No 24hr DB freeze, default = disabled')
