@@ -42,18 +42,18 @@ def process_cli(working_dir, version):
     g2 = parser.add_mutually_exclusive_group()
     parser.add_argument('date',
                         type=int,
-                        metavar=('date {YYYYMMDD}'),
+                        metavar=('{date in format YYYYMMDD}'),
                         help='Date to restore files, date will be used to find closest file before or after date')
     parser.add_argument('-hr', '--hour',
                         default='12',
                         type=int,
                         choices=range(0, 24),
-                        metavar=('[0..24]'),
+                        metavar=('{0..24}'),
                         help='Hour to restore files, time will be used to find closest file before or after time - Default = 12, 0 = 12am, 12 = 12pm, 17 = 5pm')
     g1.add_argument('-pm', '--plus-minus',
                         default='0',
                         type=int,
-                        metavar=('[int]'),
+                        metavar=('{int}'),
                         help='Limit restore date/time plus/minus hours for desired date/time default=0, 0 = disabled, 2 = +/- 2 hour')
     g1.add_argument('-b', '--before',
                         action="store_true",
@@ -64,22 +64,22 @@ def process_cli(working_dir, version):
     parser.add_argument('-vd', '--versions-dir',
                         default='.stversions',
                         type=str,
-                        metavar=('[dir]'),
+                        metavar=('{dir}'),
                         help='Versioning directory to index, default = .stversions')
     parser.add_argument('-rd','--restore-dir',
                         default='restore',
                         type=str,
-                        metavar=('[dir path]'),
+                        metavar=('{dir path}'),
                         help='Restore DIR, default = restore')
     parser.add_argument('-dd', '--db-dir',
                         default=working_dir,
                         type=str,
-                        metavar=('[dir path]'),
+                        metavar=('{dir path}'),
                         help='Directory to find DB file, default = %s' % working_dir)
     parser.add_argument('-df', '--db-file',
                         default='st_restore.sqlite',
                         type=str,
-                        metavar=('[filename]'),
+                        metavar=('{filename}'),
                         help='DB file name, default = st_restore.sqlite')
     parser.add_argument('-nf', '--no-freeze',
                         action="store_true",
@@ -96,22 +96,22 @@ def process_cli(working_dir, version):
     g2.add_argument('-ff', '--filter-file',
                         default=None,
                         type=str,
-                        metavar=('[string]'),
+                        metavar=('{string}'),
                         help='Filter out specific filename, default = No filtering')
     g2.add_argument('-fd','--filter-dir',
                         default=None,
                         type=str,
-                        metavar=('[string]'),
+                        metavar=('{string}'),
                         help='Filter specific DIR, default = No filtering')
     g2.add_argument('-fa','--filter-allinstances',
                         default=None,
                         type=str,
-                        metavar=('[absolute path of file]'),
+                        metavar=('{absolute path of file}'),
                         help='Filter specific DIR and filename and restore all instances, default = No filtering')
     g2.add_argument('-fb','--filter-dirandfile',
                         default=None,
                         type=str,
-                        metavar=('[absolute path of file]'),
+                        metavar=('{absolute path of file}'),
                         help='Filter specific DIR and filename, default = No filtering')
     parser.add_argument('-d', '--debug',
                         action="store_true",

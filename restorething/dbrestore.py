@@ -198,7 +198,7 @@ def process_dir(final_results, rest_dir, no_sim):
 
 
 def encode_filenames(final_results, dst_dir, args):
-    # going to need restore directory
+    # creates source and destination files for copy process
     logger = logging.getLogger(__name__)
 
     # prep src dst file

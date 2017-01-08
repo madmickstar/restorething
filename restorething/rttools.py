@@ -52,17 +52,19 @@ def validate_cli_date(date):
     # process date
     logger = logging.getLogger(__name__)
     cli_date = str(date)
-    # year 1000-2999 followed by months with 31 days and then months with 30 days then feb with up to 28 days - 29 days is handled below
-    prog = re.compile('[1-2]\d{3}(((0[13578]|1[02])(0[1-9]|[12]\d|3[01]))|((0[469]|11)(0[1-9]|[12]\d|30))|(02(0[1-9]|1\d|2[0-8])))')
+    prog = re.compile('(19[7-9]\d|2\d{3})(((0[13578]|1[02])(0[1-9]|[12]\d|3[01]))|((0[469]|11)(0[1-9]|[12]\d|30))|(02(0[1-9]|1\d|2[0-8])))')
     result = prog.match(cli_date)
     if result:
         return cli_date
     else:
         chars = re.compile('[1-2]\d{7}')
+        epoch = re.compile('19[7-9]\d{5}|2\d{7}')
         month = re.compile('\d{4}((0[1-9])|(1[0-2]))\d{2}')
         feb = re.compile('[1-2]\d{3}0229')
         if not chars.match(cli_date):
             raise RuntimeError('Wrong date format %s, expecting 8 integers in format YYYYMMDD' % cli_date)
+        elif not epoch.match(cli_date):
+            raise RuntimeError('Wrong date %s, epoch based dates start from 19700101' % cli_date)
         elif not month.match(cli_date):
             raise RuntimeError('Wrong date %s, Month does not exist' % cli_date)
         elif feb.match(cli_date):
@@ -74,7 +76,7 @@ def validate_cli_date(date):
         else:
             raise RuntimeError('Wrong date %s, Incorrect amount of days for month' % cli_date)
 
-
+            
 def process_cli_time(hour):
     # process hour
     if hour == 0:
