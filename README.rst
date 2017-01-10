@@ -44,7 +44,7 @@ Installation
 Usage
 -----
 
-``$ python -m restorething { date [ -hr {0-24} | -b | -a | -pm {int} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} | -fa {path and filename} ] | -d | --version] }``
+``$ python -m restorething { date [ -hr {0-24} | -b | -a | -pm {int} | -ai {path and filename} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} ] | -d | --version] }``
 
 +-----------+---------+---------------+--------------------------+-------------------+
 | Argument  | Type    | Format        | Default                  | Description       |
@@ -76,6 +76,12 @@ Usage
 |           |         |               |                          | each side of the  |
 |           |         |               |                          | supplied date and |
 |           |         |               |                          | hour              |
++-----------+---------+---------------+--------------------------+-------------------+
+| -ai       | string  | -ai {absolute | disabled                 | Recovers all      |
+|           |         | path of file} |                          | versions of a     |
+|           |         |               |                          | file ignoring any |
+|           |         |               |                          | date and times    |
+|           |         |               |                          | specified         |
 +-----------+---------+---------------+--------------------------+-------------------+
 | -vd       | string  | -vd {absolute | .stversions              | Sets the location |
 |           |         | or relative   |                          | of the syncthing  |
@@ -165,12 +171,6 @@ Usage
 |           |         |               |                          | matching the DIR  |
 |           |         |               |                          | and Filename      |
 +-----------+---------+---------------+--------------------------+-------------------+
-| -fa       | string  | -fa {absolute | disabled                 | Recovers all      |
-|           |         | path of file} |                          | versions of a     |
-|           |         |               |                          | file ignoring any |
-|           |         |               |                          | date and times    |
-|           |         |               |                          | specified         |
-+-----------+---------+---------------+--------------------------+-------------------+
 | -d        | switch  | -d            | disabled                 | Enables debug     |
 |           |         |               |                          | output to console |
 +-----------+---------+---------------+--------------------------+-------------------+
@@ -245,4 +245,4 @@ limitation is you have to supply a date, although it will be ignored.
 
 .. code:: bash
 
-    $ python -m restorething 20160815 -fa /some/important/directory/file.txt 
+    $ python -m restorething 20160815 -ai /some/important/directory/file.txt 
