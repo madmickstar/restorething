@@ -20,15 +20,11 @@ import ConfigParser
 import argparse                                # import cli argument
 from argparse import RawTextHelpFormatter      # Formatting help
 
-'''
-To do list
-Recover all versions of a single file - must keep date and time in filename
-'''
 
 def process_cli(working_dir, version):
     # processes cli arguments and usage guide
     parser = argparse.ArgumentParser(prog='restorething',
-                    description='''Restore tool for syncthing''',
+                    description='''Restore tool for syncthing versioning archive''',
                     epilog='''Command line examples \n\n \
                     POSIX Users \n \
                     python -m restorething 20160815 -hr 6 -vd sync/.stversions \n \
@@ -50,23 +46,28 @@ def process_cli(working_dir, version):
                         choices=range(0, 24),
                         metavar=('{0..24}'),
                         help='Hour to restore files, time will be used to find closest file before or after time - Default = 12, 0 = 12am, 12 = 12pm, 17 = 5pm')
-    g1.add_argument('-pm', '--plus-minus',
-                        default='0',
-                        type=int,
-                        metavar=('{int}'),
-                        help='Limit restore date/time plus/minus hours for desired date/time default=0, 0 = disabled, 2 = +/- 2 hour')
     g1.add_argument('-b', '--before',
                         action="store_true",
                         help='Restore files before desired date/time only - Default = disabled')
     g1.add_argument('-a', '--after',
                         action="store_true",
                         help='Restore files after desired date/time only - Default = disabled')
+    g1.add_argument('-pm', '--plus-minus',
+                        default='0',
+                        type=int,
+                        metavar=('{int}'),
+                        help='Limit restore date/time plus/minus hours for desired date/time default = 0, 0 = disabled, 2 = +/- 2 hour')
+    g1.add_argument('-ai','--all-instances',
+                        default=None,
+                        type=str,
+                        metavar=('{absolute path of file}'),
+                        help='Filter specific DIR and filename and restore all instances, default = Disabled')
     parser.add_argument('-vd', '--versions-dir',
                         default='.stversions',
                         type=str,
                         metavar=('{dir}'),
                         help='Versioning directory to index, default = .stversions')
-    parser.add_argument('-rd','--restore-dir',
+    parser.add_argument('-rd', '--restore-dir',
                         default='restore',
                         type=str,
                         metavar=('{dir path}'),
@@ -90,25 +91,23 @@ def process_cli(working_dir, version):
     parser.add_argument('-ic', '--inc-conflict',
                         action="store_true",
                         help='Inc conflict files in restore, default = disabled')
-    parser.add_argument('-ns','--no-sim',
+    parser.add_argument('-ns', '--no-sim',
                         action="store_true",
                         help='No simulate, restore for real, default = disabled')
+    parser.add_argument('-f', '--force',
+                        action="store_true",
+                        help='Overwrite files without user confirmation, default = disabled')
     g2.add_argument('-ff', '--filter-file',
                         default=None,
                         type=str,
                         metavar=('{string}'),
                         help='Filter out specific filename, default = No filtering')
-    g2.add_argument('-fd','--filter-dir',
+    g2.add_argument('-fd', '--filter-dir',
                         default=None,
                         type=str,
                         metavar=('{string}'),
                         help='Filter specific DIR, default = No filtering')
-    g2.add_argument('-fa','--filter-allinstances',
-                        default=None,
-                        type=str,
-                        metavar=('{absolute path of file}'),
-                        help='Filter specific DIR and filename and restore all instances, default = No filtering')
-    g2.add_argument('-fb','--filter-dirandfile',
+    g2.add_argument('-fb', '--filter-dirandfile',
                         default=None,
                         type=str,
                         metavar=('{absolute path of file}'),
@@ -148,25 +147,28 @@ def validate_cli(args):
     try:
         rttools.permissions(args)
     except Exception, err:
-        logger.error('Permissions check - %s' % str(err))
+        logger.error(str(err))
         sys.exit(1)
 
     # test restore dir path for .stfolder or .stversions
     restdir_abs_path = rttools.convert_to_abspath(args.restore_dir, 'Restore DIR')
-    if rttools.restoredir_check(restdir_abs_path, '.stfolder'):
-        rttools.warnuser()
-    elif rttools.restoredir_check(restdir_abs_path, '.stversions'):
-        rttools.warnuser()
-    else:
-        logger.debug('Restoring files to non syncthing operational dir')
-
+    st_op_dir = ['.stfolder', '.stversions']
+    for stdir in st_op_dir:
+        if rttools.restoredir_check(restdir_abs_path, stdir):
+            if not rttools.warnuser('''\nRestoring files to syncthing dir, recommend restoring to dir above syncthing dir.\nConfirm if you want to proceed... y/n [y] '''):
+                logger.debug('User acknowledged warning and chose to exit')
+                sys.exit(1)
+            else:
+                logger.debug('User acknowledged warning and chose to continue')
+                print '''Continuing...'''
+                break
     # test filters that require absolute path
-    if args.filter_allinstances is not None:
-        if not rttools.test_abs(args.filter_allinstances):
-            logger.error('File path is not absolute see user input -fa %s, exiting....', args.filter_allinstances)
+    if args.all_instances is not None:
+        if not rttools.test_abs(args.all_instances):
+            logger.error('File path is not absolute see user input -ai %s, exiting....', args.all_instances)
             sys.exit(1)
         else:
-            logger.debug('Filter for all instances is absolute %s', args.filter_allinstances)
+            logger.debug('Filter for all instances is absolute %s', args.all_instances)
     if args.filter_dirandfile is not None:
         if not rttools.test_abs(args.filter_dirandfile):
             logger.error('File path is not absolute see user input -fb %s, exiting....', args.filter_dirandfile)

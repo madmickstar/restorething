@@ -45,7 +45,7 @@ def get_version(path):
     version_match = re.search(regex, version_file, re.M)
     if version_match:
         return version_match.group(1)
-    raise RuntimeError('Unable to find version string in %s.', version_file)
+    raise RuntimeError('Unable to find version string in %s.' % version_file)
     
     
 def validate_cli_date(date):
@@ -135,20 +135,20 @@ def permissions(args):
 
     if os.path.isdir(args.db_dir):
         if not check_write_dir(args.db_dir):
-            raise RuntimeError('Failed write access to DB folder %s exiting....', args.db_dir)
+            raise RuntimeError('Permissions check - Failed write access to DB folder %s exiting....' % args.db_dir)
 
 
     if os.path.isfile(args.db_file):
         if not check_write_file(args.db_file):
-            raise RuntimeError('Failed write access to DB file %s exiting....', args.db_file)
+            raise RuntimeError('Permissions check - Failed write access to DB file %s exiting....' % args.db_file)
 
     current_working_dir = os.getcwd()
     if not check_write_dir(current_working_dir):
-        raise RuntimeError('Failed write access in current working folder %s exiting....', current_working_dir)
+        raise RuntimeError('Permissions check - Failed write access in current working folder %s exiting....' % current_working_dir)
 
     if os.path.isdir(args.restore_dir):
         if not check_write_dir(args.restore_dir):
-            raise RuntimeError('Restore DIR exists, but you do not have write access %s exiting....', args.restore_dir)
+            raise RuntimeError('Permissions check - Restore DIR exists, but you do not have write access %s exiting....' % args.restore_dir)
         else:
             logger.debug('Restore DIR exists %s', args.restore_dir)
     elif not os.path.isdir(args.restore_dir):
@@ -156,10 +156,9 @@ def permissions(args):
             try:
                 os.makedirs(args.restore_dir)
             except:
-                raise RuntimeError('Failed to create restore folder %s exiting....', args.restore_dir)
+                raise RuntimeError('Permissions check - Failed to create restore folder %s exiting....' % args.restore_dir)
         else:
             logger.info('Simulating restore. Restore DIR does not exist, will need to create restore DIR %s', args.restore_dir)
-
     logger.info('Successfully passed all write access tests')
 
 
@@ -216,18 +215,21 @@ def restoredir_check(abs_path, sync_dir):
             return False
 
 
-def warnuser():
+def warnuser(warning):
     # found .stfolder or .stversions in path of where script is running from
     # need user to acknowledge they are running script potentially from sycthing dir
     # user input accepts enter and y to continue, anything else aborts
     logger = logging.getLogger(__name__)
-    var = raw_input('''\nRestoring files to syncthing dir, recommend restoring to dir above syncthing dir,\nConfirm if you want to proceed... y/n [y]''')
+    #logger.warning(warning)
+    var = raw_input(warning)
     if var:
         if 'y' not in var:
-            logger.debug('User acknowledged warning and chose to exit')
-            sys.exit(1)
-        logger.debug('User acknowledged warning and chose to continue')
-        print '''Continuing...'''
+            return False
+        else:
+            return True
+    else:
+        return True
+
 
 
 def format_time(seconds):

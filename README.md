@@ -38,7 +38,7 @@ $ pip install restorething
 Usage
 -----
 `
-$ python -m restorething { date [ -hr {0-24} | -b | -a | -pm {int} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} | -fa {path and filename} ] | -d | --version] }
+$ python -m restorething { date [ -hr {0-24} | -b | -a | -pm {int} | -ai {path and filename} | -vd {dir} | -rd {dir} | -dd {dir} | -df {filename} | -nf | -nd | -ic | -ns | [ -ff {string} | -fd {string} | -fb {path and filename} ] | -d | --version] }
 `
 
 Argument  | Type   | Format        | Default                    | Description
@@ -48,6 +48,7 @@ date | integer | YYYYMMDD | No default value. Field must be supplied by user | D
 -b | switch | -b | disabled | Limit restore of files to before the supplied date and hour
 -a | switch | -a | disabled | Limit restore of files to after the supplied date and hour
 -pm | integer | -pm {0-2147483647 hrs} | 0 | Limit restore of files to plus/minus hours each side of the supplied date and hour
+-ai | string | -ai {absolute path of file} | disabled | Recovers all versions of a file ignoring any date and times specified
 -vd | string | -vd {absolute or relative path of DIR} | .stversions | Sets the location of the syncthing versioning folder, by default script looks in directory script is run from
 -rd | string | -rd {absolute or relative path of DIR} | restore | Enables the ability to restore to a location other than the default
 -dd | string | -dd {absolute or relative path of DIR} | /home/name/.restorething | Enables the ability to use a database file in a different location, default behaviour is to store database file in users home directory
@@ -59,7 +60,6 @@ date | integer | YYYYMMDD | No default value. Field must be supplied by user | D
 -ff | string | -ff {string} | disabled | Recovers a single version of any files matching the string supplied
 -fd | string | -fd {string} | disabled | Recovers a single version of all files in any DIR matching the string supplied
 -fb | string | -fb {absolute path of file} | disabled | Recovers a single version of a file matching the DIR and Filename
--fa | string | -fa {absolute path of file} | disabled | Recovers all versions of a file ignoring any date and times specified
 -d | switch | -d | disabled | Enables debug output to console
 --version | switch | --version | disabled | Displays version
 
@@ -98,5 +98,5 @@ $ python -m restorething 20160815 -hr 6 -pm 10 -vd sync/.stversions
 
 Restore all instances of a file located in directory `/some/important/directory/`, named `file.txt`. Current script limitation is you have to supply a date, although it will be ignored. 
 ```bash
-$ python -m restorething 20160815 -fa /some/important/directory/file.txt 
+$ python -m restorething 20160815 -ai /some/important/directory/file.txt 
 ```

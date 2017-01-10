@@ -24,7 +24,20 @@ def db_getrowout(cur, args):
     else:
         no_del_filter = 1
 
-    if args.filter_file is not None:
+
+    if args.all_instances is not None:
+        logger.debug('Restoring all instances of %s', args.all_instances)
+
+        f_dir, f_file = os.path.split(args.all_instances)
+        logger.debug('Restoring all instances of DIR = %s, File = %s', f_dir, f_file)
+        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict and string matching dir
+        cur.execute('''SELECT di.*, fo.* \
+                    FROM tb_file_out fo \
+                    INNER JOIN tb_dir_in di \
+                    ON fo.id_dir = di.id_dir \
+                    WHERE fo.conflict_flag <= (?) AND fo.delete_flag <= (?) AND di.dir_orig LIKE (?) AND fo.filename_out LIKE (?)''', (inc_conf_filter, no_del_filter, f_dir, f_file))
+
+    elif args.filter_file is not None:
         logger.debug('Filtering based on file %s', args.filter_file)
 
         # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict string matching filename
@@ -43,18 +56,6 @@ def db_getrowout(cur, args):
                     INNER JOIN tb_dir_in di \
                     ON fo.id_dir = di.id_dir \
                     WHERE fo.conflict_flag <= (?) AND fo.delete_flag <= (?) AND di.dir LIKE (?)''', (inc_conf_filter, no_del_filter,'%'+args.filter_dir+'%'))
-
-    elif args.filter_allinstances is not None:
-        logger.debug('Restoring all instances of %s', args.filter_allinstances)
-
-        f_dir, f_file = os.path.split(args.filter_allinstances)
-        logger.debug('Restoring all instances of DIR = %s, File = %s', f_dir, f_file)
-        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict and string matching dir
-        cur.execute('''SELECT di.*, fo.* \
-                    FROM tb_file_out fo \
-                    INNER JOIN tb_dir_in di \
-                    ON fo.id_dir = di.id_dir \
-                    WHERE fo.conflict_flag <= (?) AND fo.delete_flag <= (?) AND di.dir_orig LIKE (?) AND fo.filename_out LIKE (?)''', (inc_conf_filter, no_del_filter, f_dir, f_file))
 
     else:
         logger.debug('No file or DIR filtering')
@@ -158,7 +159,7 @@ def restore_file(final_results, restdir_abs_path, args):
     dst_dir = process_dir(final_results, restdir_abs_path, args.no_sim)
     ue_src_file, ue_dst_file = encode_filenames(final_results, dst_dir, args)
     if dst_dir:
-        copy_files(ue_src_file, ue_dst_file, args.no_sim)
+        copy_files(ue_src_file, ue_dst_file, args.no_sim, args.force)
     else:
         logger.error('Failed to create destination DIR skipping file %s', ue_dst_file)
 
@@ -203,7 +204,7 @@ def encode_filenames(final_results, dst_dir, args):
 
     # prep src dst file
     src_file = os.path.join(final_results[0], final_results[2])
-    if args.filter_allinstances is not None:
+    if args.all_instances is not None:
         dst_file = os.path.join(dst_dir, final_results[2])
     else:
         dst_file = os.path.join(dst_dir, final_results[3])
@@ -218,31 +219,40 @@ def encode_filenames(final_results, dst_dir, args):
     return ue_src_file, ue_dst_file
 
 
-def copy_files(ue_src_file, ue_dst_file, no_sim):
+def copy_files(ue_src_file, ue_dst_file, no_sim, force):
     # going to need restore directory
     logger = logging.getLogger(__name__)
 
-    # if source exists
+    # if source does not exist
     if rttools.check_file_exists(ue_src_file):
-        if rttools.check_file_exists(ue_dst_file):
-            logger.warning('Destination file exists overwriting %s', ue_dst_file)
+        logger.info('---------------------------------------------------------------------')
+        logger.info('Restoring %s', ue_dst_file)
         if no_sim:
+            if rttools.check_file_exists(ue_dst_file):
+                if force:
+                    logger.warning('Destination file exists, overwriting...')
+                else:
+                    if not rttools.warnuser('''WARNING  : rttools    : Destination file exists, do you want to overwrite destination... y/n [y] '''):
+                        logger.info('Skipping file...')
+                        return
             try:
                 shutil.copy(ue_src_file, ue_dst_file)
                 logger.debug('Successfully restored from %s', ue_src_file)
-                logger.info('Successfully restored too %s', ue_dst_file)
+                logger.info('Successfully restored %s', ue_dst_file)
             except Exception as err:
                 logger.error('Failed to restore file from %s', ue_src_file)
                 logger.error('Failed to restore file too %s', ue_dst_file)
                 logger.error('Failed with error %s', err)
         else:
-          logger.debug('Simulate restoring from %s', ue_src_file)
-          logger.info('Simulate restoring too %s', ue_dst_file)
+            if rttools.check_file_exists(ue_dst_file):
+                logger.warning('Simulation restore - Destination file exists, overwriting')
+            logger.debug('Simulation restore - from %s', ue_src_file)
+            logger.info('Simulation restore - too %s', ue_dst_file)
     else:
-      logger.error('Restore failed, source does not exist, src = %s', ue_src_file)
-      logger.debug('Restore failed, source does not exist, dst = %s', ue_dst_file)
+        logger.error('Restore failed, source does not exist, src = %s', ue_src_file)
+        logger.debug('Restore failed, source does not exist, dst = %s', ue_dst_file)
 
-
+        
 def main(database_file, cli_epoch, restdir_abs_path, args):
     '''
     Restore files from DB file
@@ -263,7 +273,7 @@ def main(database_file, cli_epoch, restdir_abs_path, args):
         for x in row_out:
             cur, row_in = db_getrowin(cur, x, args)
 
-            if args.filter_allinstances is not None:
+            if args.all_instances is not None:
                 row_count = len(row_in)
                 logger.debug('Archive query returned %s results - row_in', row_count)
             else:
@@ -273,7 +283,7 @@ def main(database_file, cli_epoch, restdir_abs_path, args):
                     continue
 
             for z in row_in:
-                if args.filter_allinstances is not None:
+                if args.all_instances is not None:
                     final_results = [x[1], x[2], z[2], x[5], z[5]]
                     restore_file(final_results, restdir_abs_path, args)
                 else:
