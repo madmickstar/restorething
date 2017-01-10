@@ -25,12 +25,16 @@ def db_getrowout(cur, args):
         no_del_filter = 1
 
 
-    if args.all_instances is not None:
-        logger.debug('Restoring all instances of %s', args.all_instances)
-
-        f_dir, f_file = os.path.split(args.all_instances)
-        logger.debug('Restoring all instances of DIR = %s, File = %s', f_dir, f_file)
-        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict and string matching dir
+    if ( args.all_instances or args.filter_dirandfile ) is not None:
+        if args.filter_dirandfile:
+            f_dir, f_file = os.path.split(args.filter_dirandfile)
+            logger.debug('Restoring with filter %s', args.filter_dirandfile)
+            logger.info('Restoring with filter DIR = %s, File = %s', f_dir, f_file)
+        if args.all_instances:
+            f_dir, f_file = os.path.split(args.all_instances)
+            logger.debug('Restoring all instances of %s', args.all_instances)
+            logger.info('Restoring all instances of DIR = %s, File = %s', f_dir, f_file)
+        # query tables file_out and dir_in and filter by args.no_delete and args.inc_conflict and string matching dir and file
         cur.execute('''SELECT di.*, fo.* \
                     FROM tb_file_out fo \
                     INNER JOIN tb_dir_in di \
