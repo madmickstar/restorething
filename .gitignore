@@ -1,0 +1,8 @@
+*.py[cod]
+*.sqlite
+*.log
+*_old.py
+logging.ini
+logging_debug.ini
+dist
+build
