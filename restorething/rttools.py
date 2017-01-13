@@ -39,7 +39,8 @@ def process_working_dir():
 
 
 def get_version(path):
-    with open(path, encoding='utf-8') as f:
+    fullpath = os.path.join(os.path.dirname(sys.argv[0]), path)
+    with open(fullpath, encoding='utf-8') as f:
         version_file = f.read()
     regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
     version_match = re.search(regex, version_file, re.M)
