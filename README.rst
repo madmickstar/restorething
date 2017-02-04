@@ -2,7 +2,7 @@ Restorething
 ============
 
 ``restorething`` is a tool for restoring files from a syncthing
-verisoning archive. Supply ``restorething`` the path to the syncthing
+versioning archive. Supply ``restorething`` the path to the syncthing
 versioning directory and a date, it will index the available files in
 the versioning archive and restore files for you.
 
@@ -144,11 +144,11 @@ Usage
 |           |         |               |                          | are not restored  |
 +-----------+---------+---------------+--------------------------+-------------------+
 | -ns       | switch  | -ns           | disabled                 | Enables no        |
-|           |         |               |                          | simultation mode, |
+|           |         |               |                          | simulation mode,  |
 |           |         |               |                          | default behaviour |
 |           |         |               |                          | is to simulate    |
 |           |         |               |                          | restore, no       |
-|           |         |               |                          | simultation mode  |
+|           |         |               |                          | simulation mode   |
 |           |         |               |                          | will copy files   |
 |           |         |               |                          | from syncthing    |
 |           |         |               |                          | archive to hard   |
@@ -193,8 +193,8 @@ Default behaviour
    an opportunity to review any detected warnings. By supplying the -ns
    flag, the user can enable the no simulation mode and do an actual
    restore, no simulation, no undo.
--  The script will create a directory named restore in the diretory the
-   scrpt is being called from and restore all files recursively inside
+-  The script will create a directory named restore in the directory the
+   script is being called from and restore all files recursively inside
    of it
 -  If no syncthing versioning directory is supplied, the default
    behaviour is to look in the directory the script is being called
