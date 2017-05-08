@@ -54,7 +54,7 @@ date | integer | YYYYMMDD | No default value. Field must be supplied by user | D
 -dd | string | -dd {absolute or relative path of DIR} | /home/name/.restorething | Enables the ability to use a database file in a different location, default behaviour is to store database file in users home directory
 -df | string | -df {filename} | restorething.db | Enables the ability to use a database file with a different name
 -nf | switch | -nf | disabled | Enables indexing archived files every time script is run, by default script will reuse existing DB file for 24 hours
--nd | switch | -nd | disabled | Enables restoring files that have been deleted or changed due to renaming, by default deleted or renamed files are not included in restore
+-nd | switch | -nd | disabled | Exclude restoring files that have been deleted or changed due to renaming, by default deleted or renamed files are included in restore
 -ic | switch | -ic | disabled | Enables restoring files that were marked as conflict files by syncthing and deleted by user, by default conflict files are not restored
 -ns | switch | -ns | disabled | Enables no simulation mode, default behaviour is to simulate restore, no simulation mode will copy files from syncthing archive to hard drive
 -ff | string | -ff {string} | disabled | Recovers a single version of any files matching the string supplied

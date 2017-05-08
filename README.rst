@@ -123,15 +123,15 @@ Usage
 |           |         |               |                          | existing DB file  |
 |           |         |               |                          | for 24 hours      |
 +-----------+---------+---------------+--------------------------+-------------------+
-| -nd       | switch  | -nd           | disabled                 | Enables restoring |
+| -nd       | switch  | -nd           | disabled                 | Exclude restoring |
 |           |         |               |                          | files that have   |
 |           |         |               |                          | been deleted or   |
 |           |         |               |                          | changed due to    |
 |           |         |               |                          | renaming, by      |
 |           |         |               |                          | default deleted   |
 |           |         |               |                          | or renamed files  |
-|           |         |               |                          | are not included  |
-|           |         |               |                          | in restore        |
+|           |         |               |                          | are included in   |
+|           |         |               |                          | restore           |
 +-----------+---------+---------------+--------------------------+-------------------+
 | -ic       | switch  | -ic           | disabled                 | Enables restoring |
 |           |         |               |                          | files that were   |

@@ -87,10 +87,10 @@ def process_cli(working_dir, version):
                         help='No 24hr DB freeze, default = disabled')
     parser.add_argument('-nd', '--no-delete',
                         action="store_true",
-                        help='No deleted or renamed files in restore, default = disabled')
+                        help='Exclude deleted or renamed files from restore, default = disabled')
     parser.add_argument('-ic', '--inc-conflict',
                         action="store_true",
-                        help='Inc conflict files in restore, default = disabled')
+                        help='Include conflict files in restore, default = disabled')
     parser.add_argument('-ns', '--no-sim',
                         action="store_true",
                         help='No simulate, restore for real, default = disabled')
