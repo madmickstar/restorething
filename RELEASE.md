@@ -1,6 +1,11 @@
 Restorething Release Notes
 ==========================
 
+v0.2.5 08/05/2017
+-----------------
+
+* updated doco - fixed description of -nd switch
+
 v0.2.4 04/02/2017
 -----------------
 
